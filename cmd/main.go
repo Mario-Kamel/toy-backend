@@ -9,8 +9,11 @@ import (
 
 func main() {
 
-	pgStore, err := db.NewPostgresStore()
-
+	pgStore, err := db.NewPostgresStorage()
+	if err != nil {
+		log.Fatal(err)
+	}
+	pgStore.InitStorage()
 	server := api.NewAPIServer(":8080", nil)
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
