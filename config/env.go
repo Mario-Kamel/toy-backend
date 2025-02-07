@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -15,17 +16,17 @@ type Config struct {
 var Envs = initConfig()
 
 func initConfig() Config {
-	godotenv.Load()
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 	return Config{
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "postgres"),
-		DBName:     getEnv("DB_NAME", "temp"),
+		DBUser:     getEnv("DB_USER"),
+		DBPassword: getEnv("DB_PASSWORD"),
+		DBName:     getEnv("DB_NAME"),
 	}
 }
 
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
+func getEnv(key string) string {
+	return os.Getenv(key)
 }
